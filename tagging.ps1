@@ -1,4 +1,4 @@
-﻿param
+param
 (
     [Parameter (Mandatory = $false)]
     [object] $WebhookData
@@ -32,12 +32,17 @@ if ($WebhookData) {
         }
     }
 
+    Write-Output $action.data.resourceUri
+
     $targetResource = Get-AzureRmResource -ResourceId $action.data.resourceUri
     $name = $action.data.claims.name
 
+    if ($targetResource -eq $null){
+        throw "Could not get the detailed of resource"
+    }
+
     $newTag = @{}
     if ($targetResource.Tags -eq $null ){
-        Write-Output $action.data.resourceUri
         Write-Output "Tag is nothing"
         $newTag += @{createdby=$name}
         Set-AzureRmResource -ResourceId $action.data.resourceUri -Tag $newTag -force

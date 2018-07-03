@@ -1,6 +1,9 @@
 ﻿$location = "japaneast"
 $ErrorActionPreference = "stop"
-$appName = "autoTagging"
+
+$subscriptionId = (Get-AzureRmContext).Subscription
+$subId = "/subscriptions/" + $subscriptionId
+$appName = "autoTagging_$subscriptionId"
 
 Write-Output ((Get-Date -format "yyyy/MM/dd HH:mm:ss") + " Create resource group")
 $resourceGroup = New-AzureRmResourceGroup -Name $appName -Location $location
@@ -37,8 +40,7 @@ $Webhook = New-AzureRmAutomationWebhook -Name "fromEventGrid" -IsEnabled $True -
                                         -AutomationAccountName $autoAccountName -Force
 
 Write-Output ((Get-Date -format "yyyy/MM/dd HH:mm:ss") + " Add event grid subscription")
-$subscriptionId = (Get-AzureRmContext).Subscription
-$subId = "/subscriptions/" + $subscriptionId
+
 $eventSub = New-AzureRmEventGridSubscription -ResourceId $subId -EventSubscriptionName $appName `
                                              -EndpointType webhook -Endpoint $webhook.WebhookURI -IncludedEventType "Microsoft.Resources.ResourceWriteSuccess"
 

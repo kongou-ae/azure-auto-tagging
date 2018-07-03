@@ -3,7 +3,7 @@ $ErrorActionPreference = "stop"
 
 $subscriptionId = (Get-AzureRmContext).Subscription
 $subId = "/subscriptions/" + $subscriptionId
-$appName = "autoTagging_$subscriptionId"
+$appName = "autoTagging-$subscriptionId"
 
 Write-Output ((Get-Date -format "yyyy/MM/dd HH:mm:ss") + " Create resource group")
 $resourceGroup = New-AzureRmResourceGroup -Name $appName -Location $location

@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop";
 try{
 
-    import-module "D:\home\site\wwwroot\autotagging\azuremodules\AzureRM.profile\AzureRM.Profile.psd1" -Global
+    import-module "D:\home\site\wwwroot\autotagging\azuremodules\AzureRM.Profile\AzureRM.Profile.psd1" -Global
     import-module "D:\home\site\wwwroot\autotagging\azuremodules\AzureRM.OperationalInsights\AzureRM.OperationalInsights.psd1" -Global
     import-module "D:\home\site\wwwroot\autotagging\azuremodules\AzureRM.Resources\AzureRM.Resources.psd1" -Global
 
@@ -19,7 +19,7 @@ try{
     # 必ず１時間間隔とは限らないので、多少かぶらせるために65分Spanで
     $queryResults = Invoke-AzureRmOperationalInsightsQuery `
         -WorkspaceId $workspaceId.value `
-        -Query $query -Timespan (New-TimeSpan -Minutes 125)
+        -Query $query -Timespan (New-TimeSpan -Minutes 65)
 
     foreach($item in $queryResults.Results){
 

@@ -4,6 +4,8 @@ The powershell function to add the tag which inform who create a resource.
 
 <img src="https://user-images.githubusercontent.com/3410186/51788139-04d3c100-21be-11e9-9fda-04dd3d341b86.PNG" width="800">
 
+This function searches the action which creates new resource by using Activity Log in Log Analytics once every hour. If new resource was created, this function adds `createdby` tag to new resource.
+
 # Installation
 
 1. Open the bash of Cloud Shell

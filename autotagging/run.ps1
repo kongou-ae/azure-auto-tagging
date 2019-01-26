@@ -23,7 +23,7 @@ try{
 
     foreach($item in $queryResults.Results){
 
-        if ($item.ResourceType == "	Microsoft Resources"){
+        if ($item.ResourceType == "Microsoft Resources"){
             $resource = Get-AzureRmResourceGroup -ResourceId $item.ResourceId
         } else {
             $resource = Get-AzureRmResource -ResourceId $item.ResourceId -ExpandProperties

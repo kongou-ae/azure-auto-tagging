@@ -13,3 +13,9 @@ The powershell function to add the tag which inform who create a resource.
 1. `terraform init`, `terraform plan` and `terraform apply`
 1. Run the command which terraform will inform of you.
 1. Add Azure Activity log to the data source of your Log Analytics workspaces.
+
+# Contributing
+If you confirm the resource which this function could not add a tag, please open an issue or create a pull request.
+
+# License
+[MIT](https://choosealicense.com/licenses/mit/)

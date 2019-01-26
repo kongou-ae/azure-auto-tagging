@@ -11,7 +11,7 @@ The powershell function to add the tag which inform who create a resource.
 1. `cd azure-auto-tagging`
 1. `zip -r autotagging.zip autotagging/ host.json`
 1. `terraform init`, `terraform plan` and `terraform apply`
-1. Run the command which terraform will inform of you.
+1. To install this function in Function apps, run the command which terraform will inform of you.
 1. Add Azure Activity log to the data source of your Log Analytics workspaces.
 
 # Contributing

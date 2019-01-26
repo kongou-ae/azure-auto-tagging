@@ -15,7 +15,7 @@ try{
         -Credential $credential `
         -TenantId $tenant.value
 
-    $query = "AzureActivity | where ActivitySubstatus contains "Create" | where ResourceProvider != "Microsoft.Authorization" | project TimeGenerated, Caller, Resource, ResourceProvider,  ResourceId, ActivitySubstatus | sort by TimeGenerated desc"
+    $query = 'AzureActivity | where ActivitySubstatus contains "Create" | where ResourceProvider != "Microsoft.Authorization" | where ResourceId !contains "providers/Microsoft.Resources/deployments" | project TimeGenerated, Caller, Resource, ResourceProvider,  ResourceId, ActivitySubstatus | sort by TimeGenerated desc'
     # 必ず１時間間隔とは限らないので、多少かぶらせるために65分Spanで
     $queryResults = Invoke-AzureRmOperationalInsightsQuery `
         -WorkspaceId $workspaceId.value `
@@ -23,10 +23,11 @@ try{
 
     foreach($item in $queryResults.Results){
 
-        # タグがつけられないRBACの更新を除外
-        if ( $item.ResourceId -match "Microsoft.Authorization"){ continue }
-
-        $resource = Get-AzureRmResource -ResourceId $item.ResourceId -ExpandProperties
+        if ($item.ResourceType == "	Microsoft Resources"){
+            $resource = Get-AzureRmResourceGroup -ResourceId $item.ResourceId
+        } else {
+            $resource = Get-AzureRmResource -ResourceId $item.ResourceId -ExpandProperties
+        }
 
         # リソースの情報が取得できて（正しいレスポンスで何も値が返ってこないリソースがいた
         if ( [string]::IsNullOrEmpty($resource) -eq $false){
@@ -54,5 +55,5 @@ try{
         } 
     }
 } catch {
-    Write-Output $_.Exception
+    Write-Error $_.Exception  
 }

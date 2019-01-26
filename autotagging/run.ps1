@@ -23,7 +23,7 @@ try{
 
     foreach($item in $queryResults.Results){
 
-        if ($item.ResourceType -eq "Microsoft Resources"){
+        if ($item.ResourceProvider -eq "Microsoft Resources"){
             $resource = Get-AzureRmResourceGroup -ResourceId $item.ResourceId
         } else {
             $resource = Get-AzureRmResource -ResourceId $item.ResourceId -ExpandProperties
@@ -32,8 +32,8 @@ try{
         # リソースの情報が取得できて（正しいレスポンスで何も値が返ってこないリソースがいた
         if ( [string]::IsNullOrEmpty($resource) -eq $false){
 
-            # リソースタイプが存在していないものを除外
-            if ($resource.ResourceType -eq $null){ continue }        
+            # リソースグループでないのに、リソースタイプが存在していないものを除外
+            if (($item.ResourceProvider -ne "Microsoft Resources") -and ($resource.ResourceType -eq $null)) { continue }        
 
             # 子リソースを除外（ParentResourceに値が入っている＝子リソース）
             if ($resource.ParentResource -ne $null){ continue }
@@ -55,5 +55,6 @@ try{
         } 
     }
 } catch {
-    Write-Error $_.Exception  
+    Write-Error $_.Exception
+  
 }

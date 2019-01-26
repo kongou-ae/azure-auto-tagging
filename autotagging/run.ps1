@@ -15,7 +15,7 @@ try{
         -Credential $credential `
         -TenantId $tenant.value
 
-    $query = 'AzureActivity | where ActivitySubstatus contains "Create" | where Authorization !contains "Microsoft.Resources/deployments/write" | project TimeGenerated, Caller, Resource, ResourceId, ActivitySubstatus | sort by TimeGenerated desc'
+    $query = "AzureActivity | where ActivitySubstatus contains "Create" | where ResourceProvider != "Microsoft.Authorization" | project TimeGenerated, Caller, Resource, ResourceProvider,  ResourceId, ActivitySubstatus | sort by TimeGenerated desc"
     # 必ず１時間間隔とは限らないので、多少かぶらせるために65分Spanで
     $queryResults = Invoke-AzureRmOperationalInsightsQuery `
         -WorkspaceId $workspaceId.value `

@@ -88,6 +88,14 @@ resource "azurerm_function_app" "autotagging" {
 
 }
 
-output "Next command" {
-  value = "az functionapp deployment source config-zip -g ${azurerm_resource_group.autotagging.name} -n ${azurerm_function_app.autotagging.name} --src autotagging.zip"
+resource "null_resource" "createZip" {
+  provisioner "local-exec" {
+    command = "zip -r autotagging.zip autotagging/ host.json"
+  }
+}
+
+resource "null_resource" "uploadZip" {
+  provisioner "local-exec" {
+    command = "az functionapp deployment source config-zip -g ${azurerm_resource_group.autotagging.name} -n ${azurerm_function_app.autotagging.name} --src autotagging.zip"
+  }
 }

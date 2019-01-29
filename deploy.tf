@@ -9,6 +9,11 @@ resource "random_string" "autotagging" {
   length = 32
 }
 
+resource "random_integer" "random" {
+  min     = 1
+  max     = 999999
+}
+
 resource "azuread_application" "autotagging" {
   name                       = "autotagging-${replace(data.azurerm_subscription.current.id,"/.subscriptions.(.*)$/","$1")}"
   homepage                   = "https://autotagging"
@@ -35,25 +40,21 @@ resource "azurerm_role_assignment" "autotagging" {
 }
 
 resource "azurerm_resource_group" "autotagging" {
-  name     = "autotagging-${replace(data.azurerm_subscription.current.id,"/.subscriptions.(.*)$/","$1")}"
+  name     = "autotagging-${random_integer.random.result}"
   location = "West US2"
 }
 
 resource "azurerm_log_analytics_workspace" "autotagging" {
-  name                = "autotagging-${replace(data.azurerm_subscription.current.id,"/.subscriptions.(.*)$/","$1")}"
+  name                = "autotagging-${random_integer.random.result}"
   location            = "${azurerm_resource_group.autotagging.location}"
   resource_group_name = "${azurerm_resource_group.autotagging.name}"
-  sku                 = "PerGB2018"
+  sku                 = "standalone"
+  #sku                 = "PerGB2018"
   retention_in_days   = 30
 }
 
-resource "random_integer" "storagenameint" {
-  min     = 1
-  max     = 999999
-}
-
 resource "azurerm_storage_account" "autotagging" {
-  name                     = "antotagging${random_integer.storagenameint.result}"
+  name                     = "antotagging${random_integer.random.result}"
   location                 = "${azurerm_resource_group.autotagging.location}"
   resource_group_name      = "${azurerm_resource_group.autotagging.name}"
   account_tier             = "Standard"
@@ -61,7 +62,7 @@ resource "azurerm_storage_account" "autotagging" {
 }
 
 resource "azurerm_app_service_plan" "autotagging" {
-  name                = "antotagging-${replace(data.azurerm_subscription.current.id,"/.subscriptions.(.*)$/","$1")}"
+  name                = "antotagging-${random_integer.random.result}"
   location            = "${azurerm_resource_group.autotagging.location}"
   resource_group_name = "${azurerm_resource_group.autotagging.name}"
   kind                = "FunctionApp"
@@ -73,7 +74,7 @@ resource "azurerm_app_service_plan" "autotagging" {
 }
 
 resource "azurerm_function_app" "autotagging" {
-  name                      = "antotagging-${replace(data.azurerm_subscription.current.id,"/.subscriptions.(.*)$/","$1")}"
+  name                      = "antotagging-${random_integer.random.result}"
   location                  = "${azurerm_resource_group.autotagging.location}"
   resource_group_name       = "${azurerm_resource_group.autotagging.name}"
   app_service_plan_id       = "${azurerm_app_service_plan.autotagging.id}"
@@ -83,11 +84,19 @@ resource "azurerm_function_app" "autotagging" {
     "spn_appid"    = "${azuread_application.autotagging.application_id}"
     "spn_tenant"   = "${data.azurerm_client_config.current.tenant_id}"
     "spn_password" = "${random_string.autotagging.result}"
-    "workspaceId"  = "${azurerm_log_analytics_workspace.autotagging.workspace_id }"
+    "workspaceId"  = "${azurerm_log_analytics_workspace.autotagging.workspace_id}"
   }
 
 }
 
-output "Next command" {
-  value = "az functionapp deployment source config-zip -g ${azurerm_resource_group.autotagging.name} -n ${azurerm_function_app.autotagging.name} --src autotagging.zip"
+resource "null_resource" "createZip" {
+  provisioner "local-exec" {
+    command = "zip -r autotagging.zip autotagging/ host.json"
+  }
+}
+
+resource "null_resource" "uploadZip" {
+  provisioner "local-exec" {
+    command = "az functionapp deployment source config-zip -g ${azurerm_resource_group.autotagging.name} -n ${azurerm_function_app.autotagging.name} --src autotagging.zip"
+  }
 }

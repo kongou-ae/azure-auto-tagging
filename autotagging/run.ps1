@@ -44,13 +44,13 @@ try{
             # そもそもTagのValueが空なら、CreatedByを書き込み
             if ( $resource.Tags -eq $null ){
                 Write-output "$Caller created $ResourceId"
-                Set-AzureRmResource -ResourceId $item.ResourceId -Tag @{ createdBy="$Caller" } -Force
+                Set-AzureRmResource -ResourceId $item.ResourceId -Tag @{ createdBy="$Caller" } -Force -asjob | out-null
             }
             
             # TagのValueは空じゃないけど、Valueの中にCreatedByのキーがなかったら、CreatedByを書き込み
             if ( ($resource.Tags -ne $null) -and ( $resource.Tags.ContainsKey('createdBy') -eq $false )){
                 Write-output "$Caller created $ResourceId"
-                Set-AzureRmResource -ResourceId $item.ResourceId -Tag @{ createdBy="$Caller" } -Force
+                Set-AzureRmResource -ResourceId $item.ResourceId -Tag @{ createdBy="$Caller" } -Force -asjob | out-null
             }
         } 
     }

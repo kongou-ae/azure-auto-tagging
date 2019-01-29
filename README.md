@@ -4,7 +4,7 @@ The PowerShell function to add the tag which informs who create a resource.
 
 <img src="https://user-images.githubusercontent.com/3410186/51788139-04d3c100-21be-11e9-9fda-04dd3d341b86.PNG" width="800">
 
-This function searches the action which creates a new resource by using Activity Log in Log Analytics once every hour. If a new resource was created, this function adds `createdby` tag to a new resource.
+This function searches the action which creates a new resource by using Activity Log in Log Analytics once every hour. If a new resource was created, this function adds `createdBy` tag to a new resource.
 
 # Installation
 

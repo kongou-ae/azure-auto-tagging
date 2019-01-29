@@ -73,6 +73,13 @@ resource "azurerm_app_service_plan" "autotagging" {
   }
 }
 
+resource "azurerm_application_insights" "autotagging" {
+  name                = "antotagging-${random_integer.random.result}"
+  location            = "${azurerm_resource_group.autotagging.location}"
+  resource_group_name = "${azurerm_resource_group.autotagging.name}"
+  application_type    = "Web"
+}
+
 resource "azurerm_function_app" "autotagging" {
   name                      = "antotagging-${random_integer.random.result}"
   location                  = "${azurerm_resource_group.autotagging.location}"
@@ -85,9 +92,12 @@ resource "azurerm_function_app" "autotagging" {
     "spn_tenant"   = "${data.azurerm_client_config.current.tenant_id}"
     "spn_password" = "${random_string.autotagging.result}"
     "workspaceId"  = "${azurerm_log_analytics_workspace.autotagging.workspace_id}"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.autotagging.instrumentation_key}"
   }
 
 }
+
+
 
 resource "null_resource" "createZip" {
   provisioner "local-exec" {

@@ -24,9 +24,9 @@ try{
     foreach($item in $queryResults.Results){
 
         if ($item.ResourceProvider -eq "Microsoft Resources"){
-            $resource = Get-AzureRmResourceGroup -ResourceId $item.ResourceId
+            $resource = Get-AzureRmResourceGroup -ResourceId $item.ResourceId -ErrorAction SilentlyContinue
         } else {
-            $resource = Get-AzureRmResource -ResourceId $item.ResourceId -ExpandProperties
+            $resource = Get-AzureRmResource -ResourceId $item.ResourceId -ExpandProperties -ErrorAction SilentlyContinue
         }
 
         # リソースの情報が取得できて（正しいレスポンスで何も値が返ってこないリソースがいた

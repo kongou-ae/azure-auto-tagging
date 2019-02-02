@@ -48,8 +48,8 @@ resource "azurerm_log_analytics_workspace" "autotagging" {
   name                = "autotagging-${random_integer.random.result}"
   location            = "${azurerm_resource_group.autotagging.location}"
   resource_group_name = "${azurerm_resource_group.autotagging.name}"
-  sku                 = "standalone"
-  #sku                 = "PerGB2018"
+  #sku                 = "standalone"
+  sku                 = "PerGB2018"
   retention_in_days   = 30
 }
 

@@ -8,7 +8,7 @@ This function searches the action which creates a new resource by using Activity
 
 # Architecture
 
-![](https://user-images.githubusercontent.com/3410186/52177145-235e3b80-2800-11e9-852e-6a8da59ee51f.png)
+<img src="https://user-images.githubusercontent.com/3410186/52177145-235e3b80-2800-11e9-852e-6a8da59ee51f.png" width="800">
 
 # Installation
 

@@ -113,7 +113,7 @@ resource "null_resource" "uploadZip" {
 
 resource "null_resource" "connectLaAndActivityLog" {
   provisioner "local-exec" {
-    command = "az resource create -g ${azurerm_resource_group.autotagging.name} -n autotagging-${random_integer.random.result} --resource-type dataSources --namespace microsoft.operationalinsights/workspaces --is-full-object --parent autotagging-${random_integer.random.result} -p '{\"properties\":{\"LinkedResourceId\":\"${data.azurerm_subscription.current.id}/providers/microsoft.insights/eventtypes/management\"},\"kind\":\"AzureActivityLog\",\"location\":\"${azurerm_resource_group.autotagging.location}\"}' --api-version 2015-11-01-preview"
+    command = "az resource create -g ${azurerm_resource_group.autotagging.name} -n autotagging-${random_integer.random.result} --resource-type dataSources --namespace microsoft.operationalinsights/workspaces --is-full-object --parent ${azurerm_log_analytics_workspace.autotagging.name} -p '{\"properties\":{\"LinkedResourceId\":\"${data.azurerm_subscription.current.id}/providers/microsoft.insights/eventtypes/management\"},\"kind\":\"AzureActivityLog\",\"location\":\"${azurerm_resource_group.autotagging.location}\"}' --api-version 2015-11-01-preview"
   }
 }
 
